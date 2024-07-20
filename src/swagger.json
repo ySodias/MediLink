@@ -1,0 +1,53 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "version": "0.1.0",
+        "title": "MediLink",
+        "description": "FIAP Hackathon",
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        }
+    },
+    "servers": [
+        {
+            "url": "/api/",
+            "description": "For http requests"
+        }
+    ],
+    "tags": [
+        {
+            "name": "MediLink",
+            "descricao": "FIAP Hackathon"
+        }
+    ],
+    "consumes": ["application/json"],
+    "produces": ["application/json"],
+    "paths": {
+       "/health": {
+            "get": {
+                "tags": ["Health"],
+                "summary": "Check Health in system",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/Health"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+       "Health": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "default": "Application Alive!!!"
+                }
+            }
+        }
+    }
+}
