@@ -10,6 +10,7 @@ datasource db {
 
 model Usuario {
   id       Int        @id @default(autoincrement())
+  nome     String
   email    String
   senha    String
   Paciente Paciente[]
@@ -19,8 +20,7 @@ model Usuario {
 model Paciente {
   id               Int                @id @default(autoincrement())
   idUsuario        Int
-  nome             String
-  cpf              String
+  cpf              String             @unique
   createdAt        DateTime           @default(now())
   updatedAt        DateTime           @default(now())
   Usuario          Usuario            @relation(fields: [idUsuario], references: [id])
@@ -40,8 +40,7 @@ model Medico {
   id                    Int                   @id @default(autoincrement())
   idUsuario             Int
   idEspecialidadeMedica Int
-  crm                   String
-  nome                  String
+  crm                   String                @unique
   createdAt             DateTime              @default(now())
   updatedAt             DateTime              @default(now())
   Usuario               Usuario               @relation(fields: [idUsuario], references: [id])

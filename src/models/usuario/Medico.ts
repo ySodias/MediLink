@@ -5,7 +5,6 @@ interface Medico extends Usuario {
     idUsuario: number;
     idEspecialidade: number;
     crm: string;
-    nome: string;
     createdAt: Date;
     updatedAt: Date;
 }

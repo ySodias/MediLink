@@ -3,7 +3,6 @@ import { Usuario } from "./Usuario";
 interface Paciente extends Usuario {
     id: number;
     idUsuario: string;
-    nome: string;
     cpf: string;
     createdAt: Date;
     updatedAt: Date;
