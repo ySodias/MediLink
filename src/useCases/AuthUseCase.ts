@@ -3,6 +3,7 @@ import { IAuthUseCase } from "@/interfaces/useCases/IAuthUseCase";
 import { UsuarioLogado } from "@/models/usuario/UsuarioLogado";
 
 
+
 var jwt = require('jsonwebtoken');
 
 export class AuthUseCase implements IAuthUseCase {
@@ -20,8 +21,7 @@ export class AuthUseCase implements IAuthUseCase {
             const token = jwt.sign({ 
                 nome: usuario.Usuario.nome,
                 exp: expAt
-            }, 'SHHH');
-            console.log(usuario)
+            }, process.env.PRIVATE_PEM);
             const usuarioResponse: UsuarioLogado = {
                 nome: usuario.Usuario.nome,
                 token: token,
