@@ -9,7 +9,121 @@ datasource db {
 }
 
 model Usuario {
-  id        Int                  @id @default(autoincrement())
-  email String
-  senha String
+  id       Int        @id @default(autoincrement())
+  email    String
+  senha    String
+  Paciente Paciente[]
+  Medico   Medico[]
+}
+
+model Paciente {
+  id               Int                @id @default(autoincrement())
+  idUsuario        Int
+  nome             String
+  cpf              String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @default(now())
+  Usuario          Usuario            @relation(fields: [idUsuario], references: [id])
+  Prontuario       Prontuario[]
+  AcessoProntuario AcessoProntuario[]
+  Consulta         Consulta[]
+}
+
+model EspecialidadeMedica {
+  id                 Int                  @id @default(autoincrement())
+  nomeEspecialidade  String
+  Medico             Medico[]
+  ArquivosProntuario ArquivosProntuario[]
+}
+
+model Medico {
+  id                    Int                   @id @default(autoincrement())
+  idUsuario             Int
+  idEspecialidadeMedica Int
+  crm                   String
+  nome                  String
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @default(now())
+  Usuario               Usuario               @relation(fields: [idUsuario], references: [id])
+  EspecialidadeMedica   EspecialidadeMedica   @relation(fields: [idEspecialidadeMedica], references: [id])
+  HorariosAtendimento   HorariosAtendimento[]
+  Prontuario            Prontuario[]
+  AcessoProntuario      AcessoProntuario[]
+  Consulta              Consulta[]
+}
+
+model HorariosAtendimento {
+  id                Int      @id @default(autoincrement())
+  idMedico          Int
+  HorarioDisponivel DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now())
+  Medico            Medico   @relation(fields: [idMedico], references: [id])
+}
+
+model Prontuario {
+  id                 Int                  @id @default(autoincrement())
+  idMedico           Int
+  idPaciente         Int
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @default(now())
+  Medico             Medico               @relation(fields: [idMedico], references: [id])
+  Paciente           Paciente             @relation(fields: [idPaciente], references: [id])
+  ArquivosProntuario ArquivosProntuario[]
+  AcessoProntuario   AcessoProntuario[]
+}
+
+model ArquivosProntuario {
+  id                    Int                 @id @default(autoincrement())
+  idProntuario          Int
+  idEspecialidadeMedica Int
+  linkS3                String
+  tipoArquivo           String
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @default(now())
+  EspecialidadeMedica   EspecialidadeMedica @relation(fields: [idEspecialidadeMedica], references: [id])
+  Prontuario            Prontuario          @relation(fields: [idProntuario], references: [id])
+}
+
+model AcessoProntuario {
+  id               Int        @id @default(autoincrement())
+  idProntuario     Int
+  idPaciente       Int
+  idMedicoLiberado Int
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @default(now())
+  Prontuario       Prontuario @relation(fields: [idProntuario], references: [id])
+  Medico           Medico     @relation(fields: [idMedicoLiberado], references: [id])
+  Paciente         Paciente   @relation(fields: [idPaciente], references: [id])
+}
+
+model Consulta {
+  id                 Int                  @id @default(autoincrement())
+  idPaciente         Int
+  idMedico           Int
+  horarioAgendado    String
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @default(now())
+  Medico             Medico               @relation(fields: [idMedico], references: [id])
+  Paciente           Paciente             @relation(fields: [idPaciente], references: [id])
+  RequisicaoConsulta RequisicaoConsulta[]
+  Telemedicina       Telemedicina[]
+}
+
+model RequisicaoConsulta {
+  id         Int      @id @default(autoincrement())
+  idConsulta Int
+  aceito     Boolean
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now())
+  Consulta   Consulta @relation(fields: [idConsulta], references: [id])
+}
+
+model Telemedicina {
+  id          Int      @id @default(autoincrement())
+  idConsulta  Int
+  linkChamada String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now())
+  Consulta    Consulta @relation(fields: [idConsulta], references: [id])
 }
