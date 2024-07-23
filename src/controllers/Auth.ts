@@ -29,7 +29,6 @@ export default class AuthController implements IAuthController {
         }
         try {
             const response = await this.authUseCase.efetuarLogin(requestBody, tipoUsuario)
-            console.log(response)
             return res
                 .status(200)
                 .json(response)
