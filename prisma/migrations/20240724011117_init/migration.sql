@@ -40,17 +40,6 @@ CREATE TABLE "Medico" (
 );
 
 -- CreateTable
-CREATE TABLE "HorariosAtendimento" (
-    "id" SERIAL NOT NULL,
-    "idMedico" INTEGER NOT NULL,
-    "HorarioDisponivel" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-    CONSTRAINT "HorariosAtendimento_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
 CREATE TABLE "Prontuario" (
     "id" SERIAL NOT NULL,
     "idMedico" INTEGER NOT NULL,
@@ -89,11 +78,11 @@ CREATE TABLE "AcessoProntuario" (
 -- CreateTable
 CREATE TABLE "Consulta" (
     "id" SERIAL NOT NULL,
-    "idPaciente" INTEGER NOT NULL,
-    "idMedico" INTEGER NOT NULL,
-    "horarioAgendado" TEXT NOT NULL,
+    "idRequisicaoConsulta" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "pacienteId" INTEGER,
+    "medicoId" INTEGER,
 
     CONSTRAINT "Consulta_pkey" PRIMARY KEY ("id")
 );
@@ -101,12 +90,26 @@ CREATE TABLE "Consulta" (
 -- CreateTable
 CREATE TABLE "RequisicaoConsulta" (
     "id" SERIAL NOT NULL,
-    "idConsulta" INTEGER NOT NULL,
+    "idAgendaMedico" INTEGER NOT NULL,
     "aceito" BOOLEAN NOT NULL,
+    "idMedico" INTEGER NOT NULL,
+    "idPaciente" INTEGER NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "RequisicaoConsulta_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "AgendaMedico" (
+    "id" SERIAL NOT NULL,
+    "idMedico" INTEGER NOT NULL,
+    "horarioDisponivel" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "horarioSolicitado" BOOLEAN NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "AgendaMedico_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -136,9 +139,6 @@ ALTER TABLE "Medico" ADD CONSTRAINT "Medico_idUsuario_fkey" FOREIGN KEY ("idUsua
 ALTER TABLE "Medico" ADD CONSTRAINT "Medico_idEspecialidadeMedica_fkey" FOREIGN KEY ("idEspecialidadeMedica") REFERENCES "EspecialidadeMedica"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "HorariosAtendimento" ADD CONSTRAINT "HorariosAtendimento_idMedico_fkey" FOREIGN KEY ("idMedico") REFERENCES "Medico"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
 ALTER TABLE "Prontuario" ADD CONSTRAINT "Prontuario_idMedico_fkey" FOREIGN KEY ("idMedico") REFERENCES "Medico"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -160,13 +160,25 @@ ALTER TABLE "AcessoProntuario" ADD CONSTRAINT "AcessoProntuario_idMedicoLiberado
 ALTER TABLE "AcessoProntuario" ADD CONSTRAINT "AcessoProntuario_idPaciente_fkey" FOREIGN KEY ("idPaciente") REFERENCES "Paciente"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Consulta" ADD CONSTRAINT "Consulta_idMedico_fkey" FOREIGN KEY ("idMedico") REFERENCES "Medico"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Consulta" ADD CONSTRAINT "Consulta_idRequisicaoConsulta_fkey" FOREIGN KEY ("idRequisicaoConsulta") REFERENCES "RequisicaoConsulta"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Consulta" ADD CONSTRAINT "Consulta_idPaciente_fkey" FOREIGN KEY ("idPaciente") REFERENCES "Paciente"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Consulta" ADD CONSTRAINT "Consulta_pacienteId_fkey" FOREIGN KEY ("pacienteId") REFERENCES "Paciente"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "RequisicaoConsulta" ADD CONSTRAINT "RequisicaoConsulta_idConsulta_fkey" FOREIGN KEY ("idConsulta") REFERENCES "Consulta"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Consulta" ADD CONSTRAINT "Consulta_medicoId_fkey" FOREIGN KEY ("medicoId") REFERENCES "Medico"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RequisicaoConsulta" ADD CONSTRAINT "RequisicaoConsulta_idAgendaMedico_fkey" FOREIGN KEY ("idAgendaMedico") REFERENCES "AgendaMedico"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RequisicaoConsulta" ADD CONSTRAINT "RequisicaoConsulta_idMedico_fkey" FOREIGN KEY ("idMedico") REFERENCES "Medico"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "RequisicaoConsulta" ADD CONSTRAINT "RequisicaoConsulta_idPaciente_fkey" FOREIGN KEY ("idPaciente") REFERENCES "Paciente"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "AgendaMedico" ADD CONSTRAINT "AgendaMedico_idMedico_fkey" FOREIGN KEY ("idMedico") REFERENCES "Medico"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Telemedicina" ADD CONSTRAINT "Telemedicina_idConsulta_fkey" FOREIGN KEY ("idConsulta") REFERENCES "Consulta"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
