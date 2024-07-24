@@ -19,7 +19,7 @@ class ConsultaRepository {
         })
     }
 
-    async aceitarRecusarConsulta(aceitarRecusarData: any): Promise<void> {
+    async alterarSolicitacaoConsulta(aceitarRecusarData: any): Promise<void> {
         await this.prismaClient.requisicaoConsulta.update({
             where:{
                 id: aceitarRecusarData.id
@@ -29,6 +29,17 @@ class ConsultaRepository {
             }
         })
 
+    }
+
+    async alteraAgendaMedico(alterarData: any): Promise<void> {
+        await this.prismaClient.agendaMedico.update({
+            where:{
+                id: alterarData.idAgendaMedico
+            },
+            data:{
+                horarioSolicitado: alterarData.horarioSolicitado
+            }
+        })
     }
 
     async criarConsulta(criarConsultaData: any): Promise<void> {

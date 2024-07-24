@@ -1,10 +1,14 @@
+import { ConsultaGateway } from "@/gateways/ConsultaGateway";
+import { ConsultaUseCase } from "@/useCases/ConsultaUseCase";
 import { Response, Request } from "express";
 
 export default class ConsultaController {
-    private consultaRepository: any
+    private consultaGateway: any
+    private consultaUseCase: any
 
     constructor(consultaRepository: any) {
-        this.consultaRepository = consultaRepository
+        this.consultaGateway = new ConsultaGateway(consultaRepository)
+        this.consultaUseCase = new ConsultaUseCase(this.consultaGateway)
     }
 
     async criarSolicitacaoConsulta(req: Request, res: Response) {
@@ -17,7 +21,8 @@ export default class ConsultaController {
         }
 
         try {
-            await this.consultaRepository.criarSolicitacaoConsulta(requestBody)            
+            await this.consultaUseCase.criarSolicitacaoConsulta(requestBody)
+            res.send('Solicitação de consulta criada com sucesso').status(200)        
         } catch (error: any) {
             console.log(error)
         }
@@ -28,13 +33,10 @@ export default class ConsultaController {
     async aceitarRecusarConsulta(req: Request, res: Response) {
         try {
             const { consultaId } = req.params
-            const { aceito } = req.body
+            const { aceito, idAgendaMedico } = req.body
 
-            await this.consultaRepository.aceitarRecusarConsulta({ id: parseInt(consultaId), aceito })
+            await this.consultaUseCase.aceitarRecusarConsulta({ id: parseInt(consultaId), aceito, idAgendaMedico: parseInt(idAgendaMedico)})
             
-            if (aceito) {
-                await this.consultaRepository.criarConsulta({ id: parseInt(consultaId) })
-            }
             res.send('Consulta atualizada com sucesso').status(200)
         } catch (error: any) {
             console.log(error)
@@ -44,7 +46,7 @@ export default class ConsultaController {
 
     async listarSolicitacoesConsulta(req: Request, res: Response) {
         try {
-            const solicitacoes = await this.consultaRepository.listarSolicitacoesConsulta()
+            const solicitacoes = await this.consultaUseCase.listarSolicitacoesConsulta()
             res.json(solicitacoes).status(200)
         } catch (error: any) {
             console.log(error)
@@ -54,7 +56,7 @@ export default class ConsultaController {
 
     async listarConsultas(req: Request, res: Response) {
         try {
-            const consultas = await this.consultaRepository.listarConsultas()
+            const consultas = await this.consultaUseCase.listarConsultas()
             res.json(consultas).status(200)
         } catch (error: any) {
             console.log(error)
