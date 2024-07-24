@@ -4,8 +4,7 @@ const prisma = new PrismaClient();
 
 async function main() {
 
-    // Produtos
-    const produto1 = await prisma.usuario.upsert({
+    const usuario1 = await prisma.usuario.upsert({
         where: { id: 1 },
         update: {},
         create: {

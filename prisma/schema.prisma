@@ -18,15 +18,16 @@ model Usuario {
 }
 
 model Paciente {
-  id               Int                @id @default(autoincrement())
-  idUsuario        Int
-  cpf              String             @unique
-  createdAt        DateTime           @default(now())
-  updatedAt        DateTime           @default(now())
-  Usuario          Usuario            @relation(fields: [idUsuario], references: [id])
-  Prontuario       Prontuario[]
-  AcessoProntuario AcessoProntuario[]
-  Consulta         Consulta[]
+  id                 Int                  @id @default(autoincrement())
+  idUsuario          Int
+  cpf                String               @unique
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @default(now())
+  Usuario            Usuario              @relation(fields: [idUsuario], references: [id])
+  Prontuario         Prontuario[]
+  AcessoProntuario   AcessoProntuario[]
+  Consulta           Consulta[]
+  RequisicaoConsulta RequisicaoConsulta[]
 }
 
 model EspecialidadeMedica {
@@ -37,28 +38,19 @@ model EspecialidadeMedica {
 }
 
 model Medico {
-  id                    Int                   @id @default(autoincrement())
+  id                    Int                  @id @default(autoincrement())
   idUsuario             Int
   idEspecialidadeMedica Int
-  crm                   String                @unique
-  createdAt             DateTime              @default(now())
-  updatedAt             DateTime              @default(now())
-  Usuario               Usuario               @relation(fields: [idUsuario], references: [id])
-  EspecialidadeMedica   EspecialidadeMedica   @relation(fields: [idEspecialidadeMedica], references: [id])
-  HorariosAtendimento   HorariosAtendimento[]
+  crm                   String               @unique
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @default(now())
+  Usuario               Usuario              @relation(fields: [idUsuario], references: [id])
+  EspecialidadeMedica   EspecialidadeMedica  @relation(fields: [idEspecialidadeMedica], references: [id])
   Prontuario            Prontuario[]
   AcessoProntuario      AcessoProntuario[]
   Consulta              Consulta[]
-}
-
-model HorariosAtendimento {
-  id                Int               @id @default(autoincrement())
-  idMedico          Int
-  HorarioDisponivel DateTime          @default(now())
-  createdAt         DateTime          @default(now())
-  updatedAt         DateTime          @default(now())
-  Medico            Medico            @relation(fields: [idMedico], references: [id])
-  HorarioAgendado   HorarioAgendado[]
+  RequisicaoConsulta    RequisicaoConsulta[]
+  AgendaMedico          AgendaMedico[]
 }
 
 model Prontuario {
@@ -98,26 +90,42 @@ model AcessoProntuario {
 }
 
 model Consulta {
-  id                 Int                  @id @default(autoincrement())
-  idPaciente         Int
-  idMedico           Int
-  horarioAgendado    String
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime             @default(now())
-  Medico             Medico               @relation(fields: [idMedico], references: [id])
-  Paciente           Paciente             @relation(fields: [idPaciente], references: [id])
-  RequisicaoConsulta RequisicaoConsulta[]
-  Telemedicina       Telemedicina[]
+  id                   Int                @id @default(autoincrement())
+  horarioAgendado      String
+  idRequisicaoConsulta Int
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @default(now())
+  RequisicaoConsulta   RequisicaoConsulta @relation(fields: [idRequisicaoConsulta], references: [id])
+  Telemedicina         Telemedicina[]
+  Paciente             Paciente?          @relation(fields: [pacienteId], references: [id])
+  pacienteId           Int?
+  Medico               Medico?            @relation(fields: [medicoId], references: [id])
+  medicoId             Int?
 }
 
 model RequisicaoConsulta {
-  id              Int               @id @default(autoincrement())
-  idConsulta      Int
-  aceito          Boolean
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @default(now())
-  Consulta        Consulta          @relation(fields: [idConsulta], references: [id])
-  HorarioAgendado HorarioAgendado[]
+  id             Int          @id @default(autoincrement())
+  idAgendaMedico Int
+  aceito         Boolean
+  idMedico       Int
+  idPaciente     Int
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @default(now())
+  AgendaMedico   AgendaMedico @relation(fields: [idAgendaMedico], references: [id])
+  Medico         Medico       @relation(fields: [idMedico], references: [id])
+  Paciente       Paciente     @relation(fields: [idPaciente], references: [id])
+  Consulta       Consulta[]
+}
+
+model AgendaMedico {
+  id                 Int                  @id @default(autoincrement())
+  idMedico           Int
+  horarioDisponivel  DateTime             @default(now())
+  horarioSolicitado  Boolean
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @default(now())
+  Medico             Medico               @relation(fields: [idMedico], references: [id])
+  RequisicaoConsulta RequisicaoConsulta[]
 }
 
 model Telemedicina {
@@ -127,14 +135,4 @@ model Telemedicina {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
   Consulta    Consulta @relation(fields: [idConsulta], references: [id])
-}
-
-model HorarioAgendado {
-  id                   Int                 @id @default(autoincrement())
-  idHorarioAtendimento Int
-  idRequisicaoConsulta Int
-  createdAt            DateTime            @default(now())
-  updatedAt            DateTime            @default(now())
-  HorariosAtendimento  HorariosAtendimento @relation(fields: [idHorarioAtendimento], references: [id])
-  RequisicaoConsulta   RequisicaoConsulta  @relation(fields: [idRequisicaoConsulta], references: [id])
 }

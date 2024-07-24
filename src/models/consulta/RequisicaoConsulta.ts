@@ -1,7 +1,9 @@
 interface RequisicaoConsulta {
     id: number;
-    idConsulta: number;
+    idAgenda: number;
     aceito: boolean;
+    idMedico: number;
+    idPaciente: number;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -9,8 +11,10 @@ interface RequisicaoConsulta {
 class RequisicaoConsultaImpl implements RequisicaoConsulta {
     constructor(
         public id: number,
-        public idConsulta: number,
+        public idAgenda: number,
         public aceito: boolean,
+        public idMedico: number,
+        public idPaciente: number,
         public createdAt: Date,
         public updatedAt: Date,
     ) {}
