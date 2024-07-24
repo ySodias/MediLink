@@ -52,12 +52,13 @@ model Medico {
 }
 
 model HorariosAtendimento {
-  id                Int      @id @default(autoincrement())
+  id                Int               @id @default(autoincrement())
   idMedico          Int
-  HorarioDisponivel DateTime @default(now())
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @default(now())
-  Medico            Medico   @relation(fields: [idMedico], references: [id])
+  HorarioDisponivel DateTime          @default(now())
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @default(now())
+  Medico            Medico            @relation(fields: [idMedico], references: [id])
+  HorarioAgendado   HorarioAgendado[]
 }
 
 model Prontuario {
@@ -110,12 +111,13 @@ model Consulta {
 }
 
 model RequisicaoConsulta {
-  id         Int      @id @default(autoincrement())
-  idConsulta Int
-  aceito     Boolean
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @default(now())
-  Consulta   Consulta @relation(fields: [idConsulta], references: [id])
+  id              Int               @id @default(autoincrement())
+  idConsulta      Int
+  aceito          Boolean
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now())
+  Consulta        Consulta          @relation(fields: [idConsulta], references: [id])
+  HorarioAgendado HorarioAgendado[]
 }
 
 model Telemedicina {
@@ -125,4 +127,14 @@ model Telemedicina {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @default(now())
   Consulta    Consulta @relation(fields: [idConsulta], references: [id])
+}
+
+model HorarioAgendado {
+  id                   Int                 @id @default(autoincrement())
+  idHorarioAtendimento Int
+  idRequisicaoConsulta Int
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @default(now())
+  HorariosAtendimento  HorariosAtendimento @relation(fields: [idHorarioAtendimento], references: [id])
+  RequisicaoConsulta   RequisicaoConsulta  @relation(fields: [idRequisicaoConsulta], references: [id])
 }
