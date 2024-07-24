@@ -6,6 +6,8 @@ import MedicoRepository from './repositories/MedicoRepository';
 import { AuthGateway } from './gateways/AuthGateway';
 import { AuthUseCase } from './useCases/AuthUseCase';
 import AuthController from './controllers/Auth';
+import { validarLogin } from './controllers/middleware/AuthMiddleware';
+
 
 export class Routes {
     private app: Application;
@@ -23,7 +25,7 @@ export class Routes {
         const pacienteRepository = new PacienteRepository(this.prisma);
         const medicoRepository = new MedicoRepository(this.prisma);
         const authController = new AuthController(pacienteRepository, medicoRepository);
-        this.app.get(`${this.BASE_URL}/health`, healthController.getHealth.bind(healthController));
+        this.app.get(`${this.BASE_URL}/health`, validarLogin, healthController.getHealth.bind(healthController));
         this.app.post(`${this.BASE_URL}/login/:tipoUsuario`, authController.login.bind(authController))
     }
 }
