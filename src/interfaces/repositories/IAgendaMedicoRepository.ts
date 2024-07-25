@@ -1,7 +1,7 @@
 import { AgendaMedico } from "@/models/AgendaMedico";
 
 export interface IAgendaMedicoRepository {
-    getAgendaMedicoByIdMedico(idMedico: number): Promise<AgendaMedico>;
-    postAgendaMedico(horarioAtendimento: AgendaMedico): Promise<AgendaMedico>;
-    putAgendaMedico(horarioAtendimento: AgendaMedico): Promise<AgendaMedico>;
+    getAgendaMedicoByIdMedico(idMedico: number): Promise<AgendaMedico[]>;
+    postAgendaMedico(agendaMedicoData: any): Promise<AgendaMedico>;
+    putAgendaMedico(idAgendaMedico: number, agendaMedicoData: any): Promise<AgendaMedico>;
 }

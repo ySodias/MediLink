@@ -26,7 +26,4 @@ export class AuthGateway implements IAuthGateway {
             throw new Error("Erro ao buscar registro no Banco!");
         }
     }
-    async validarLogin(req: any, res: any) {
-        
-    }
 }

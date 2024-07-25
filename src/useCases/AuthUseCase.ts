@@ -33,5 +33,4 @@ export class AuthUseCase implements IAuthUseCase {
             throw error;
         }
     }
-    async validarLogin(){}
 }

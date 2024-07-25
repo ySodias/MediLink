@@ -27,12 +27,93 @@
        "/health": {
             "get": {
                 "tags": ["Health"],
-                "summary": "Check Health in system",
+                "summary": "Rota para checagem se a Api está de funcionando",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/Health"
+                        }
+                    }
+                }
+            }
+        },
+        "/login/{tipoUsuario}": {
+            "post": {
+                "tags": ["Auth"],
+                "summary": "Login no Sistema",
+                    "parameters": [
+                      {
+                        "name": "tipoUsuario",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "medico",
+                                "paciente"
+                            ]
+                        },
+                        "default": "paciente"
+                      }
+                    ],
+                "requestBody": {
+                    "description": "Objeto de Login",
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/definitions/AuthInput"
+                            }
+                        }
+                    },
+                    "produces": ["application/json"]
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/AuthOutput"
+                        }
+                    }
+                }
+            }
+        },
+        "/agenda-medico/{crm}": {
+            "get": {
+                "tags": ["Agenda Medico"],
+                "summary": "Busca de Agenda do Médico",
+                "parameters": [
+                      {
+                        "name": "crm",
+                        "in": "path",
+                        "required": true,
+                        "type": "string"
+                      }
+                    ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/AgendaMedicoOutput"
+                        }
+                    },
+                    "404": {
+                        "description": "Não Encontrado",
+                        "schema": {
+                            "$ref": "#/definitions/404Response"
+                        }
+                    },
+                    "400": {
+                        "description": "Erro nas informações enviadas",
+                        "schema": {
+                            "$ref": "#/definitions/400Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro no Servidor",
+                        "schema": {
+                            "$ref": "#/definitions/500Response"
                         }
                     }
                 }
@@ -46,6 +127,107 @@
                 "message": {
                     "type": "string",
                     "default": "Application Alive!!!"
+                }
+            }
+        },
+        "AuthInput": {
+            "type": "object",
+            "properties": {
+                "crm": {
+                    "type": "string",
+                    "required": false
+                },
+                "senha": {
+                    "type": "string",
+                    "required": false
+                }
+            }
+        },
+        "AuthOutput": {
+            "type": "object",
+            "properties": {
+                "nome": {
+                    "type": "string",
+                    "required": true
+                },
+                "token": {
+                    "type": "string",
+                    "required": true
+                },
+                "dataExpiracao": {
+                    "type": "string",
+                    "required": true
+                }
+            }
+        },
+        "AgendaMedicoInput": {
+            "type": "object",
+            "properties": {
+                "horarioDisponivel": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "horarioSolicitado": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "AgendaMedicoOutput": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "required": "true"
+                },
+                "idMedico": {
+                    "type": "integer",
+                    "required": "true"
+                },
+                "horarioDisponivel": {
+                    "type": "string",
+                    "format": "date",
+                    "required": "true"
+                },
+                "horarioSolicitado": {
+                    "type": "boolean",
+                    "required": "true"
+                },
+                "createdAt": {
+                    "type": "string",
+                    "format": "date",
+                    "required": "true"
+                },
+                "updatedAt": {
+                    "type": "string",
+                    "format": "date",
+                    "required": "true"
+                }
+            }
+        },
+        "404Response": {
+            "type": "object",
+            "properties": {
+                "msg": {
+                    "type": "string",
+                    "default": "Não encontrado"
+                }
+            }
+        },
+        "400Response": {
+            "type": "object",
+            "properties": {
+                "msg": {
+                    "type": "string",
+                    "default": "Erro na Rota"
+                }
+            }
+        },
+        "500Response": {
+            "type": "object",
+            "properties": {
+                "msg": {
+                    "type": "string",
+                    "default": "Erro no Servidor"
                 }
             }
         }
