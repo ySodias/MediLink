@@ -45,16 +45,3 @@ jobs:
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
-      - name: Update kube config
-        run: aws eks update-kubeconfig --name restaurant-34-cluster --region us-east-1
-
-
-      - name: Deploy to EKS
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}        
-          IMAGE_TAG: ${{ steps.get-commit-hash.outputs.commit-hash }}
-        run: |
-          sed -i "s@image: 035133178716.dkr.ecr.us-east-1.amazonaws.com/restaurante-34-pagamento:latest@image: 035133178716.dkr.ecr.us-east-1.amazonaws.com/restaurante-34-pagamento:${IMAGE_TAG}@g" src/infra/manifests/deployment.yml && \
-          kubectl apply -f src/infra/manifests/deployment.yml
-          kubectl apply -f src/infra/manifests/service.yml
-      
