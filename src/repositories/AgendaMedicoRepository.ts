@@ -45,13 +45,18 @@ class AgendaMedicoRepository implements IAgendaMedicoRepository {
 
     async putAgendaMedico(idAgendaMedico: number, agendaMedicoData: AgendaMedico): Promise<AgendaMedico> {
         try {
+            const dateUpdate = new Date().toISOString()
+            console.log(idAgendaMedico)
+            console.log(agendaMedicoData)
             const agendaMedico = await this.prismaClient.agendaMedico.update({
+                
                 where: {
                     id: idAgendaMedico
                 },
                 data: {
                     horarioDisponivel: agendaMedicoData.horarioDisponivel,
-                    horarioSolicitado: agendaMedicoData.horarioSolicitado
+                    horarioSolicitado: agendaMedicoData.horarioSolicitado,
+                    updatedAt: dateUpdate
                 }
             })
             return agendaMedico

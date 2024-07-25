@@ -7,7 +7,9 @@ import { IMedicoGateway } from "@/interfaces/gateways/IMedicoGateway";
 import { IAgendaMedicoRepository } from "@/interfaces/repositories/IAgendaMedicoRepository";
 import { IMedicoRepository } from "@/interfaces/repositories/IMedicoRepository";
 import { IAgendaMedicoUseCase } from "@/interfaces/useCases/IAgendaMedicoUseCase";
+import { AgendaMedico } from "@/models/AgendaMedico";
 import { AgendaMedicoUseCase } from "@/useCases/AgendaMedicoUseCase";
+import { decodeToken } from "@/useCases/utils";
 import { Response, Request } from "express";
 
 export default class AgendaMedicoController implements IAgendaMedicoController {
@@ -41,8 +43,10 @@ export default class AgendaMedicoController implements IAgendaMedicoController {
     
     async postAgendaMedico(req: any, res: any): Promise<any> {
         const agendaMedicoBody = req.body
+        const { token } = req.headers
+        const medico = decodeToken(token)
         try {
-            const response = await this.agendaMedicoUseCase.executaCriarAgendaMedico(agendaMedicoBody)
+            const response = await this.agendaMedicoUseCase.executaCriarAgendaMedico(agendaMedicoBody, medico.crm)
             return res.status(201).json({msg: response})
         } catch(error){
             return res.status(400).json({msg: `Problema ao Criar Agenda Medico - ${error}`})
@@ -53,11 +57,10 @@ export default class AgendaMedicoController implements IAgendaMedicoController {
         const agendaMedicoBody = req.body
         const { id } = req.params
         try {
-            const response = await this.agendaMedicoUseCase.executaEditarAgendaMedico(id, agendaMedicoBody)
+            const response = await this.agendaMedicoUseCase.executaEditarAgendaMedico(parseInt(id), agendaMedicoBody)
             return res.status(200).json({msg: response})
         } catch(error){
             return res.status(400).json({msg: `Problema ao Atualizar Agenda Medico - ${error}`})
         }
     }
-
 }

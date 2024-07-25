@@ -118,6 +118,74 @@
                     }
                 }
             }
+        },
+            "/agenda-medico/{id}": {
+                "put": {
+                    "tags": ["Agenda Medico"],
+                    "summary": "Editar Horário para Agenda Medica",
+                    "requestBody": {
+                        "required": true,
+                        "content": {
+                            "application/json": {
+                                "type": "array",
+                                "schema": {
+                                    "$ref": "#/definitions/AgendaMedicoInput"
+                                }
+                            }
+                        }
+                    },
+                    "responses": {
+                        "200": {
+                            "description": "OK",
+                            "schema": {
+                                "$ref": "#/definitions/AgendaMedicoOutput"
+                            }
+                        },
+                        "404": {
+                            "description": "Não Encontrado",
+                            "schema": {
+                                "$ref": "#/definitions/404Response"
+                            }
+                        },
+                        "400": {
+                            "description": "Erro nas informações enviadas",
+                            "schema": {
+                                "$ref": "#/definitions/400Response"
+                            }
+                        },
+                        "500": {
+                            "description": "Erro no Servidor",
+                            "schema": {
+                                "$ref": "#/definitions/500Response"
+                            }
+                        }
+                    }
+                }
+        },
+        "/agenda-medico": {
+            "post": {
+                "tags": ["Agenda Medico"],
+                "summary": "Cria Horário para Agenda Medica",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "type": "array",
+                            "schema": {
+                                "$ref": "#/definitions/AgendaMedicoInput"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/AgendaMedicoOutput"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -165,7 +233,7 @@
             "properties": {
                 "horarioDisponivel": {
                     "type": "string",
-                    "format": "date"
+                    "format": "date-time"
                 },
                 "horarioSolicitado": {
                     "type": "boolean"
@@ -233,3 +301,4 @@
         }
     }
 }
+

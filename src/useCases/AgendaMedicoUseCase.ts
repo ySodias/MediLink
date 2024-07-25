@@ -2,6 +2,7 @@ import { IAgendaMedicoGateway } from "@/interfaces/gateways/IAgendaMedicoGateway
 import { IMedicoGateway } from "@/interfaces/gateways/IMedicoGateway";
 import { IAgendaMedicoUseCase } from "@/interfaces/useCases/IAgendaMedicoUseCase";
 import { AgendaMedico } from "@/models/AgendaMedico";
+import { decodeToken } from "./utils";
 
 
 export class AgendaMedicoUseCase implements IAgendaMedicoUseCase {
@@ -22,8 +23,10 @@ export class AgendaMedicoUseCase implements IAgendaMedicoUseCase {
             throw new Error(`${error}`)
         }
     };
-    async executaCriarAgendaMedico(agendaMedico: any): Promise<AgendaMedico> {
+    async executaCriarAgendaMedico(agendaMedico: any, crm: string): Promise<AgendaMedico> {
         try {
+            const medico = await this.medicoGateway.buscaMedicoByCrm(crm)
+            agendaMedico.idMedico = medico.id
             const agendaMedicoResponse = await this.agendaMedicoGateway.criarAgendaMedico(agendaMedico);
             return agendaMedicoResponse
         } catch(error){

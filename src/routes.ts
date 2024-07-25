@@ -37,7 +37,6 @@ export class Routes {
         const agendaMedicoController = new AgendaMedicoController(agendaMedicoRepository, medicoRepository)
         this.app.get(`${this.BASE_URL}/agenda-medico/:crm`, validarLogin, agendaMedicoController.getAgendaMedico.bind(agendaMedicoController))
         this.app.post(`${this.BASE_URL}/agenda-medico`, validarLogin, agendaMedicoController.postAgendaMedico.bind(agendaMedicoController))
-        this.app.put(`${this.BASE_URL}/agenda-medico/:idAgendaMedico`, validarLogin, agendaMedicoController.putAgendaMedico.bind(agendaMedicoController))
-    
+        this.app.put(`${this.BASE_URL}/agenda-medico/:id`, validarLogin, agendaMedicoController.putAgendaMedico.bind(agendaMedicoController))
     }
 }

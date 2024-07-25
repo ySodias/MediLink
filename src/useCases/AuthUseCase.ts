@@ -16,10 +16,12 @@ export class AuthUseCase implements IAuthUseCase {
     async efetuarLogin(loginData: any, tipoUsuario:string): Promise<UsuarioLogado> {
         try {
             const usuario = await this.authGateway.efetuarLogin(loginData, tipoUsuario)
+            console.log(usuario)
             const expAt =  Math.floor(Date.now() / 1000) + (60 * 60)
             const dataExpAt = new Date(expAt * 1000)
             const token = jwt.sign({ 
                 nome: usuario.Usuario.nome,
+                crm: usuario.crm,
                 exp: expAt
             }, process.env.PRIVATE_PEM);
             const usuarioResponse: UsuarioLogado = {
