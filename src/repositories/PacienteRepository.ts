@@ -12,6 +12,9 @@ class PacienteRepository implements IPacienteRepository {
 
     async getPacienteByCPF(cpf: string): Promise<Paciente> {
         const paciente = await this.prismaClient.paciente.findUnique({
+            include: {
+                Usuario: true
+            },
             where: {
                 cpf: cpf,
             },

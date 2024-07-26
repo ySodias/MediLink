@@ -7,6 +7,7 @@ import AuthController from './controllers/Auth';
 import { validarLogin } from './controllers/middleware/AuthMiddleware';
 import ConsultaController from './controllers/Consulta';
 import ConsultaRepository from './repositories/ConsultaRepository';
+import MedicoController from './controllers/Medico';
 import AgendaMedicoRepository from './repositories/AgendaMedicoRepository';
 import AgendaMedicoController from './controllers/AgendaMedicoController';
 
@@ -37,6 +38,8 @@ export class Routes {
         this.app.get(`${this.BASE_URL}/solicitacoes-consulta`, consultaController.listarSolicitacoesConsulta.bind(consultaController))
         this.app.get(`${this.BASE_URL}/consultas`, consultaController.listarConsultas.bind(consultaController))
         // endpoints medicos
+        const medicoController = new MedicoController(this.prisma);
+        this.app.get(`${this.BASE_URL}/medicos/:crm`, medicoController.consultarPorCRM.bind(medicoController))
         // const medicoController = new MedicoController();
         // this.app.get(`${this.BASE_URL}/medicos`, medicoController.listarMedicos.bind(medicoController))
         
