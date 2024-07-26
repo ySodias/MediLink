@@ -34,15 +34,10 @@ export class Routes {
         // endpoints consulta
         const consultaRepository = new ConsultaRepository(this.prisma);
         const consultaController = new ConsultaController(consultaRepository);
-        this.app.post(`${this.BASE_URL}/solicitar-consulta`, consultaController.criarSolicitacaoConsulta.bind(consultaController))
-        this.app.put(`${this.BASE_URL}/alterar-consulta/:consultaId`, consultaController.aceitarRecusarConsulta.bind(consultaController))
-        this.app.get(`${this.BASE_URL}/solicitacoes-consulta`, consultaController.listarSolicitacoesConsulta.bind(consultaController))
-        this.app.get(`${this.BASE_URL}/consultas`, consultaController.listarConsultas.bind(consultaController))
-        // endpoints medicos
-        // const medicoController = new MedicoController();
-        // this.app.get(`${this.BASE_URL}/medicos`, medicoController.listarMedicos.bind(medicoController))
-
-        // Rotas com Autenticacao
+        this.app.post(`${this.BASE_URL}/solicitar-consulta`, validarLogin, consultaController.criarSolicitacaoConsulta.bind(consultaController))
+        this.app.put(`${this.BASE_URL}/alterar-consulta/:consultaId`,validarLogin, consultaController.aceitarRecusarConsulta.bind(consultaController))
+        this.app.get(`${this.BASE_URL}/solicitacoes-consulta`, validarLogin, consultaController.listarSolicitacoesConsulta.bind(consultaController))
+        this.app.get(`${this.BASE_URL}/consultas`,validarLogin, consultaController.listarConsultas.bind(consultaController))
 
         // Agenda Medico
         const agendaMedicoRepository = new AgendaMedicoRepository(this.prisma);
