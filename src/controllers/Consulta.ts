@@ -26,8 +26,6 @@ export default class ConsultaController {
         } catch (error: any) {
             console.log(error)
         }
-
-        res.send('Consulta solicitada com sucesso').status(200)
     }
 
     async aceitarRecusarConsulta(req: Request, res: Response) {
