@@ -18,6 +18,8 @@ export default class MedicoController {
                     crm: crm
                 }
             })
+
+            console.log(medico)
             res.json(medico).status(200)
         } catch (error: any) {
             console.log(error)

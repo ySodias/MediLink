@@ -39,7 +39,7 @@ export class Routes {
         this.app.get(`${this.BASE_URL}/consultas`, consultaController.listarConsultas.bind(consultaController))
         // endpoints medicos
         const medicoController = new MedicoController(this.prisma);
-        this.app.get(`${this.BASE_URL}/medicos`, medicoController.consultarPorCRM.bind(medicoController))
+        this.app.get(`${this.BASE_URL}/medicos/:crm`, medicoController.consultarPorCRM.bind(medicoController))
         // const medicoController = new MedicoController();
         // this.app.get(`${this.BASE_URL}/medicos`, medicoController.listarMedicos.bind(medicoController))
         
