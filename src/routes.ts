@@ -10,6 +10,8 @@ import ConsultaRepository from './repositories/ConsultaRepository';
 import MedicoController from './controllers/Medico';
 import AgendaMedicoRepository from './repositories/AgendaMedicoRepository';
 import AgendaMedicoController from './controllers/AgendaMedicoController';
+import FiltrarMedicoController from './controllers/FiltrarMedicoController';
+import { FiltrarMedicoRepository } from './repositories/FiltrarMedicoRepository';
 
 
 export class Routes {
@@ -33,17 +35,11 @@ export class Routes {
         // endpoints consulta
         const consultaRepository = new ConsultaRepository(this.prisma);
         const consultaController = new ConsultaController(consultaRepository);
-        this.app.post(`${this.BASE_URL}/solicitar-consulta`, consultaController.criarSolicitacaoConsulta.bind(consultaController))
-        this.app.put(`${this.BASE_URL}/alterar-consulta/:consultaId`, consultaController.aceitarRecusarConsulta.bind(consultaController))
-        this.app.get(`${this.BASE_URL}/solicitacoes-consulta`, consultaController.listarSolicitacoesConsulta.bind(consultaController))
-        this.app.get(`${this.BASE_URL}/consultas`, consultaController.listarConsultas.bind(consultaController))
-        // endpoints medicos
-        const medicoController = new MedicoController(this.prisma);
-        this.app.get(`${this.BASE_URL}/medicos/:crm`, medicoController.consultarPorCRM.bind(medicoController))
-        // const medicoController = new MedicoController();
-        // this.app.get(`${this.BASE_URL}/medicos`, medicoController.listarMedicos.bind(medicoController))
-        
-        // Rotas com Autenticacao
+
+        this.app.post(`${this.BASE_URL}/solicitar-consulta`, validarLogin, consultaController.criarSolicitacaoConsulta.bind(consultaController))
+        this.app.put(`${this.BASE_URL}/alterar-consulta/:consultaId`,validarLogin, consultaController.aceitarRecusarConsulta.bind(consultaController))
+        this.app.get(`${this.BASE_URL}/solicitacoes-consulta`, validarLogin, consultaController.listarSolicitacoesConsulta.bind(consultaController))
+        this.app.get(`${this.BASE_URL}/consultas`,validarLogin, consultaController.listarConsultas.bind(consultaController))
 
         // Agenda Medico
         const agendaMedicoRepository = new AgendaMedicoRepository(this.prisma);
@@ -51,5 +47,12 @@ export class Routes {
         this.app.get(`${this.BASE_URL}/agenda-medico/:crm`, validarLogin, agendaMedicoController.getAgendaMedico.bind(agendaMedicoController))
         this.app.post(`${this.BASE_URL}/agenda-medico`, validarLogin, agendaMedicoController.postAgendaMedico.bind(agendaMedicoController))
         this.app.put(`${this.BASE_URL}/agenda-medico/:id`, validarLogin, agendaMedicoController.putAgendaMedico.bind(agendaMedicoController))
+
+        //Filtrar médicos
+        const filtroMedicoRepository = new FiltrarMedicoRepository(this.prisma);
+        const filtroMedicoController = new FiltrarMedicoController(filtroMedicoRepository)
+        this.app.get(`${this.BASE_URL}/filtrar-medico/`, validarLogin, filtroMedicoController.getFiltrarMedicoAll.bind(filtroMedicoController))
+        this.app.get(`${this.BASE_URL}/filtrar-medico/:crm`, validarLogin, filtroMedicoController.getFiltrarMedicoCrm.bind(filtroMedicoController))
+
     }
 }
